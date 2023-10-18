@@ -2886,41 +2886,41 @@ class PhotoZ(object):
                 if __name__ == '__main__':
                     ax.legend()
                 
-        if axes is None:            
-            ax.set_ylabel(ylabel)
+        #if axes is None:            
+        ax.set_ylabel(ylabel)
+        
+        if sn2_detection.sum() > 0:
+            ymax = (fmodel*fnu_factor*flam_sed)[sn2_detection].max()
+        else:
+            ymax = (fmodel*fnu_factor*flam_sed).max()
+                    
+        if np.isfinite(ymax):
+            ax.set_ylim(-0.1*ymax, 1.2*ymax)
+
+        ax.set_xlim(xlim)
+        xt = np.array([0.1, 0.5, 1, 2, 4, 8, 24, 160, 500])*1.e4
+
+        ax.semilogx()
+
+        valid_ticks = (xt > xlim[0]*1.e4) & (xt < xlim[1]*1.e4)
+        if valid_ticks.sum() > 0:
+            xt = xt[valid_ticks]
+            ax.set_xticks(xt/1.e4)
+            ax.set_xticklabels(xt/1.e4)
+
+        ax.set_xlabel(r'$\lambda_\mathrm{obs}$')
+        ax.grid()
+        
+        if add_label:
+            txt = '{0}\nID={1}'
+            txt = txt.format(self.param['MAIN_OUTPUT_FILE'], 
+                                self.OBJID[ix]) #, self.prior_mag_cat[ix])
+                                
+            ax.text(0.95, 0.95, txt, ha='right', va='top', fontsize=7,
+                    transform=ax.transAxes, 
+                    bbox=dict(facecolor='w', alpha=0.5), zorder=10)
             
-            if sn2_detection.sum() > 0:
-                ymax = (fmodel*fnu_factor*flam_sed)[sn2_detection].max()
-            else:
-                ymax = (fmodel*fnu_factor*flam_sed).max()
-                        
-            if np.isfinite(ymax):
-                ax.set_ylim(-0.1*ymax, 1.2*ymax)
-
-            ax.set_xlim(xlim)
-            xt = np.array([0.1, 0.5, 1, 2, 4, 8, 24, 160, 500])*1.e4
-
-            ax.semilogx()
-
-            valid_ticks = (xt > xlim[0]*1.e4) & (xt < xlim[1]*1.e4)
-            if valid_ticks.sum() > 0:
-                xt = xt[valid_ticks]
-                ax.set_xticks(xt/1.e4)
-                ax.set_xticklabels(xt/1.e4)
-
-            ax.set_xlabel(r'$\lambda_\mathrm{obs}$')
-            ax.grid()
-            
-            if add_label:
-                txt = '{0}\nID={1}'
-                txt = txt.format(self.param['MAIN_OUTPUT_FILE'], 
-                                 self.OBJID[ix]) #, self.prior_mag_cat[ix])
-                                 
-                ax.text(0.95, 0.95, txt, ha='right', va='top', fontsize=7,
-                        transform=ax.transAxes, 
-                        bbox=dict(facecolor='w', alpha=0.5), zorder=10)
-                
-                ax.legend(fontsize=7, loc='upper left')
+            ax.legend(fontsize=7, loc='upper left')
         
         # Optional mag scaling if show_fnu = 1 for uJy
         if (maglim is not None) & (show_fnu == 1):
